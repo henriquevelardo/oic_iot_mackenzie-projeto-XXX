@@ -1,6 +1,6 @@
 # Objetos Inteligentes Conectados 1 sem. 2018
 
-## Turma 05H
+## Turma: 05H
 ## Projeto: "Smart Lamp"
 ## Integrantes do grupo:
 
