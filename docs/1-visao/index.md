@@ -1,75 +1,42 @@
-# Documento de Visão do Projeto "NOME DO PROJETO"
+# Documento de Visão do Projeto "Smart Lamp"
 
-Este documento apresenta uma solução de software para o projeto *"NOME DO PROJETO"*, 
+Este documento apresenta uma solução de software para o projeto *"Smart Lamp"*, 
 apresentando os problemas a serem solucionados, as necessidades dos principais envolvidos, o alcance do projeto e as funcionalidades esperadas.
 
 ## Objetivos
 
-* Objetivo 1
-* Objetivo 2
-* Objetivo 3
-* etc.
-
-## Problema
-
-* Descrição do problema: ___
-* Quem é afetado pelo problema: ____
-* Impacto no negócio: ___
-* Benefícios de uma boa solução: ___
-
-## Definições, abreviações e outros termos do domínio do problema
-
-* Definição 1
-* Definição 2
-* Definição 3
-* etc.
+* Possibilitar acessibilidade das luzes da casa através de um dispositivo móvel
+* Agilizar a tarefa de acender as luzes
+* Possibilitar o controle da intensidade das luzes 
 
 ## Integração com outros sistemas
 
-* Sistema externo 1
-* Sistema externo 2
-* Sistema externo 3
-* etc.
+* Aplicação móvel SmartLamp
+* Aplicação Web
  
-## Interessados
-
-* Tipo de interessado 1
-* Tipo de interessado 2
-* Tipo de interessado 3
-* etc.
-
 ## Usuários
 
-* Tipo de usuário 1
-* Tipo de usuário 2
-* Tipo de usuário 3
-* etc.
+* Pessoas que desejam automatizar a tarefa cotidiana de acender as luzes
+* Pessoas com dificuldades de locomoção
 
 ## Funcionalidades do produto
 
-* Funcionalidade 1
-* Funcionalidade 2
-* etc.
+* Acender e apagar as luzes
+* Diminuir e aumentar a intensidade da lâmpada
+* Temporizador de controle das luzes
 
-## Restrições do projeto
+## Lista de componentes utilizados
 
-* Restrição 1
-* Restrição 2
-* Restrição 3
-* etc.
-
-## Protótipos
-
-### Protótipos para funcionalidade 1
-
-![](proto1.png)
-
-Fonte: Exemplos gerados pelo assistente do **Enterprise Architect**.
-
-### Protótipos para funcionalidade 2
-
-![](proto2.png)
-
-Fonte: Exemplos gerados pelo assistente do **Enterprise Architect**.
-
-### Protótipos para funcionalidade N
+Qtde | Componente
+-----|-----------
+01x  |Placa Uno R3
+01x  |Cabo USB
+01x  |Fonte DC Chaveada 9V 1A Plug P4
+01x  |Ethernet Shield W5100
+01x  |Cabo de Rede Conector RJ45 1,5m
+40x  |Jumpers Macho-Fêmea
+01x  |Módulo Relé 5v 2 Canais
+01x  |Fio Simples 1,0mm 3m
+02x  |Lâmpada E14 15W
+02x  |Soquete Lâmpada E14
+01x  |Plug Tomada Macho
