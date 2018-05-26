@@ -4,36 +4,40 @@
 
 **Instruções do professor**: Insira abaixo o diagrama com os casos de uso do seu sistema. A imagem abaixo é somente um exemplo.
 
-![Exemplo de diagrama dos casos de uso](exemplo-casos-uso.png)
+![diagrama dos casos de uso](casos-uso.png)
 
 ## 2. Especificação dos casos de uso
 
-**Instruções do professor**: Para cada caso de uso, criar as tabelas com a especificação do caso de uso. Siga o exemplo dado abaixo:
-
-### 2.1. Caso de uso **REGISTRAR CHAMADO**
+### 2.1. Caso de uso **Ligar Lampada**
 
 | Campo          | Informação        |
 |---|---|
 | Identificador: | UC01              |
-| Nome:          | Registrar chamado |
-| Atores:        | Membro do Help Desk |
-| Sumário:       | Registra um novo chamado no sistema |
+| Nome:          | Ligar Lampada |
+| Atores:        | Usuário |
+| Sumário:       | Envia sinal para o rele ligar a lampada |
 
 | Fluxo Principal |
 |---|
-| 1) O membro do help desk seleciona a opção **Registro de novo chamado** e informa o CPF do cliente. |
-| 2) O sistema recupera as informações do cliente pelo CPF.                   |
-| 3) O sistema apresenta as informações do cliente e o formulário para o registro do chamado. |
-| 4) O membro do help desk informa o tipo de chamado e preenche o campo descrição com o relato do cliente. |
-| 5) O sistema registra o chamado e informa que a operação foi bem-sucedida. |
+| 1) O usuário clica no botão de interruptor para ligar a lampada |
+| 2) O sistema envia uma mensagem via mqqt para o servidor                   |
+| 3) O servidor envia ao arduino a mensagem que a lampada foi ligada |
+| 4) O arduino manda sinal para o rele |
+| 5) O rele acende a lampada |
 
-| Fluxo Alternativo (2a): O sistema não encontra as informações do cliente pelo CPF. |
+### 2.2. Caso de uso **Desligar Lampada**
+
+| Campo          | Informação        |
+|---|---|
+| Identificador: | UC02              |
+| Nome:          | Desligar Lampada |
+| Atores:        | Usuário |
+| Sumário:       | Envia sinal para o rele ligar a lampada |
+
+| Fluxo Principal |
 |---|
-| 1) O sistema informa que não conseguiu recuperar as informações pelo CPF e apresenta a opção de cadastrar o cliente. |
-| 2) O membro do help desk preenche o formulário de cadastro do cliente. |
-| 3) O sistema registra os dados do cliente. |
-| 4) Volta ao passo (3) do fluxo principal. |
-
-**Instruções do professor**: As tabelas acima mostram um exemplo de especificação de **um único caso de uso**. Lembre-se de especificar cada um dos casos de uso.
-
-
+| 1) O usuário clica no botão de interruptor para desligar a lampada |
+| 2) O sistema envia uma mensagem via mqqt para o servidor                   |
+| 3) O servidor envia ao arduino a mensagem que a lampada foi desligada |
+| 4) O arduino manda sinal para o rele |
+| 5) O rele apaga a lampada |
