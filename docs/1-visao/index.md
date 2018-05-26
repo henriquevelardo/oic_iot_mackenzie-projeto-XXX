@@ -7,14 +7,13 @@ apresentando os problemas a serem solucionados, as necessidades dos principais e
 
 ## Objetivos
 
-* Possibilitar acessibilidade das luzes da casa através de um dispositivo móvel
+* Possibilitar acessibilidade das luzes da casa através da rede
 * Agilizar a tarefa de acender as luzes
 * Possibilitar o controle da intensidade das luzes 
 
 ## Integração com outros sistemas
 
-* Aplicação móvel SmartLamp
-* Aplicação Web
+* Server Ethernet
  
 ## Usuários
 
@@ -36,8 +35,8 @@ Qtde | Componente
 01x  |Fonte DC Chaveada 9V 1A Plug P4
 01x  |Ethernet Shield W5100
 01x  |Cabo de Rede Conector RJ45 1,5m
-40x  |Jumpers Macho-Fêmea
-01x  |Módulo Relé 5v 2 Canais
+03x  |Jumpers Macho-Fêmea
+01x  |Módulo Relé 5v 4 Canais
 01x  |Fio Simples 1,0mm 3m
 02x  |Lâmpada E14 15W
 02x  |Soquete Lâmpada E14
