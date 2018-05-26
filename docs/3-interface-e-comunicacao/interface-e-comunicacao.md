@@ -16,13 +16,13 @@ Este documento apresenta as interfaces propostas para o projeto "Smart Lamp", ab
 
 ## Aplicativos Utilizados
 
-* Node-red Dashboard
-* MQTT Dashboard for Android
+* Arduino
+* Ethernet Server
 
 ## Rede e Hardware
 ### Hardware
 
-* A rduino Uno R3
+* Arduino Uno R3
 * Relay Module
 * Wi-fi Shield(HR911105A)
 
@@ -30,7 +30,6 @@ Este documento apresenta as interfaces propostas para o projeto "Smart Lamp", ab
 ##### Padrão
 
 * Ethernet
-* Wi-Fi
 
 ##### Camada de Aplicação
 
