@@ -17,14 +17,15 @@ Este documento apresenta as interfaces propostas para o projeto "Smart Lamp", ab
 ## Aplicativos Utilizados
 
 * Arduino
-* Ethernet Server
+* CloudMQTT
+* MQTT Dashboard
 
 ## Rede e Hardware
 ### Hardware
 
 * Arduino Uno R3
 * Relay Module
-* Wi-fi Shield(HR911105A)
+* Ethernet Shield(HR911105A)
 
 ### Protocolos
 ##### Padrão
@@ -33,7 +34,7 @@ Este documento apresenta as interfaces propostas para o projeto "Smart Lamp", ab
 
 ##### Camada de Aplicação
 
-* HTTP
+* DHCP
 * TCP/IP
 * MQTT
 
