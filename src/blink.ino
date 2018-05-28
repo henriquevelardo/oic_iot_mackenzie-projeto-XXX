@@ -8,109 +8,141 @@
 //Data final: 26/05/2018
 
 //Projeto adaptado de projetos encontrados na internet como base
-//Uso do css e scripts do site filiflop
 
 //Importando biblioteca
 #include <SPI.h>   
 #include <Ethernet.h>
+#include <PubSubClient.h>
 
 //Definindo variaveis
+String ip = "";
 String readString;
-boolean ligado = true;
+boolean statusLamp = LOW;
 
 //Definindo pinos
-#define Lamp 8
+#define pinoLamp 8
 
 //Definindo rede
 byte mac[]={0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
-byte ip[]={172,16,18,20};
-byte gateway[]={172,16,18,1};
-byte subnet[]={255,255,254,0};
 
-//Configuração porta para o Ethernet Shield
-EthernetServer server(80);
+//Definindo o broker MQTT (CloudMQTT foi o utilizado)
+const char* mqttServer = "m11.cloudmqtt.com";   //server
+const char* mqttUser = "zfngzmhh";              //user
+const char* mqttPassword = "cY0AcBYQ01j5";      //password
+const int mqttPort = 11055;                     //port
+const char* mqttTopicSub ="my_username/SmartLamp/Lampada";  //MQTT dashboard
+
+//Configuração Ethernet Shield
+EthernetClient ethClient;
+PubSubClient mqttClient;
 
 void setup() {
-  //Define a rede do Ethernet Shiel
-  Ethernet.begin(mac, ip, gateway, subnet);
-  
-  //Inicia o servidor pelo Ethernet Shield
-  server.begin();
-  
   //Define o tipo de pino para saida
-  pinMode(Lamp, OUTPUT);
-
-  //Inicia o rele desligado
-  digitalWrite(Lamp, HIGH);
+  pinMode(pinoLamp, OUTPUT);
   
+  //Define a comunicação serial
+  Serial.begin(9600);
+  while(!Serial){};
+  Serial.println(F("SmartLamp - MQTT Communication"))
+  Serial.println();
+  
+  //Define a rede do Ethernet Shiel usando DHCP
+  if (Ethernet.begin(mac)==0){
+    Serial.println(F("Habilite a configuração Ethernet via DHCP"));
+    for(;;);
+  }
+  Serial.println(F("Configurando Ethernet via DHCP"));
+  Serial.print("IP: ");
+  Serial.println(Ethernet.localIP());
+  Serial.println();
+  
+  //Configuração do IP
+  ip = String (Ethernet.localIP()[0]);
+  ip = ip + ".";
+  ip = ip + String (Ethernet.localIP()[1]);
+  ip = ip + ".";
+  ip = ip + String (Ethernet.localIP()[2]);
+  ip = ip + ".";
+  ip = ip + String (Ethernet.localIP()[3]);
+  
+  //Configurando o Client MQTT
+  mqttClient.setClient(ethClient);
+  mqttClient.setServer(mqttServer, mqttPort);
+  mqttClient.setCallback(callback);
+  
+  
+  
+  Serial.println();
+  Serial.println(F("Pronto para enviar dados"));
+  previousMillis = millis();
+  mqttClient.publish("home/br/nb/ip", ip.c_str());
 }
 
 void loop()
 {
-  //Inicia cliente
-  EthernetClient client = server.available();
-  //Verifica se há conexão
-  if (client) {
-    while (client.connected())
-    {
-      if (client.available())
-      {
-        char c = client.read();
-        if (readString.length() < 100) {
-          readString += c;
-        }
-        if (c == 'n')
-        {
-          //Controle do rele
-          Serial.println(readString);
-          //Liga o Rele
-          if (readString.indexOf("?ligar") > 0)
-          {
-            digitalWrite(Lamp, LOW);
-            Serial.println("Lampada Ligada");
-            ligado = false;
-          }
-          else
-          {
-            //Desliga o Rele
-            if (readString.indexOf("?desligar") > 0)
-            {
-              digitalWrite(Lamp, HIGH);
-              Serial.println("Lampada  Desligado");
-              ligado = true;
-            }
-          }
-          readString = "";
-          //Layout/ Interface do servidor Ethernet
-          client.println("HTTP/1.1 200 OK");
-          client.println("Content-Type: text/html");
-          client.println();
-          client.println("<html>");
-          client.println("<head>");
-          client.println("<title>FILIPEFLOP - Automacao Residencial</title>");
-          client.println("<meta http-equiv='Content-Type' content='text/html; charset=ISO-8859-1'>");
-          client.println("<meta name='viewport' content='width=720, initial-scale=0.5' />");
-          client.println("<link rel='stylesheet' type='text/css' href='http://img.filipeflop.com/files/download/automacao/automacao_residencial.css' />");
-          client.println("<script type='text/javascript' src='http://img.filipeflop.com/files/download/automacao/automacao_residencial.js'></script>");
-          client.println("</head>");
-          client.println("<body>");
-          client.println("<div id='wrapper'><img alt='FILIPEFLOP' src='http://img.filipeflop.com/files/download/automacao/logoFF.jpg'/><br/>");
-          client.println("<div id='div1'>Rele 1</div>");
-          client.print("<div id='rele'></div><div id='estado' style='visibility: hidden;'>");
-          client.print(ligado);
-          client.println("</div>");
-          client.println(
-            "<div id='botao'></div>");
-          client.println("</div>");
-          client.println("</div>");
-          client.println("<script>AlteraRele1()</script>");
-          client.println("</div>");
-          client.println("</body>");
-          client.println("</head>");
-          delay(1);
-          client.stop();
-        }
+  statusLamp = digitalRead(pinoLamp);
+  if (millis() - previousMillis > PUBLISH_DELAY){
+    sendData();
+    previousMillis = millis();
+
+  }
+  mqttClient.loop();
+}
+
+void sendData(){
+  char msgBuffer[20];
+  Serial.print("Lampada está: ");
+  Serial.println((relaystate == LOW) ? "OPEN" : "CLOSED");
+  //Iniciando conexão com o MQTT
+  while (!mqttClient.connected()){
+    #ifdef DEBUG
+    Serial.println("Conectando ao Broker MQTT...");
+    #endif
+    if (mqttClient.connect("SmartLamp", mqttUser, mqttPassword)){
+      #ifdef DEBUG
+      Serial.println("Conectado");
+      mqttClient.publish("home/br/nb/relay", (relaystate == LOW) ? "OPEN" : "CLOSED");
+      mqttClient.subscribe(mqttTopicSub);
+      if (startsend) {
+        mqttClient.publish("home/br/nb/relay", (relaystate == LOW) ? "OPEN" : "CLOSED");
+        mqttClient.publish("home/br/nb/ip", ip.c_str());
+        startsend = LOW;
       }
+      #endif
+    } else {
+      #ifdef DEBUG 
+      Serial.print("falha estado  ");
+      Serial.print(client.state());
+      #endif
+      delay(2000);
     }
   }
+}
+
+void callback(char* topic, byte* payload, unsigned int length) {
+  char msgBuffer[20];
+  Serial.print("Mensagem recebida: [");
+  Serial.print(topic);
+  Serial.print("] ");//MQTT_BROKER
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
+  }
+  Serial.println();
+  Serial.println(payload[0]);
+  // Verifica o primeiro caracter da mensagem.
+  if (payload[0] == 49)             // Valor "1" na tabela ASCII
+  {
+    digitalWrite(pinoLampada, HIGH);// Torna saida ON
+    
+  } else if (payload[0] == 48)      // Valor "0" in ASCII
+  {
+    digitalWrite(pinoLampada, LOW);// Torna saida OFF
+  } else if (payload[0] == 50)
+  {
+    mqttClient.publish("home/br/nb/ip", ip.c_str());// publish IP nr
+  } else {
+    Serial.println("Valor Invalido");
+    mqttClient.publish("home/br/nb", "Syntax Error");
+  }
+
 }
