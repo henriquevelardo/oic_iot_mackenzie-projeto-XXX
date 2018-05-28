@@ -13,7 +13,8 @@ apresentando os problemas a serem solucionados, as necessidades dos principais e
 
 ## Integração com outros sistemas
 
-* Server Ethernet
+* MQTT Dashboar
+* CloudMQTT
  
 ## Usuários
 
@@ -23,8 +24,6 @@ apresentando os problemas a serem solucionados, as necessidades dos principais e
 ## Funcionalidades do produto
 
 * Acender e apagar as luzes
-* Diminuir e aumentar a intensidade da lâmpada
-* Temporizador de controle das luzes
 
 ## Lista de componentes utilizados
 
