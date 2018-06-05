@@ -10,14 +10,10 @@ Este documento apresenta as interfaces propostas para o projeto "Smart Lamp", ab
 
 ![Prototipo de Interface](https://github.com/henriquevelardo/oic_iot_mackenzie-projeto-XXX/blob/master/docs/3-interface-e-comunicacao/prototipo-app.png)
 
-### Protótipo do Circuito:
-
-![Prototipo de Circuito](https://github.com/henriquevelardo/oic_iot_mackenzie-projeto-XXX/blob/master/docs/3-interface-e-comunicacao/prototipo-hardware.png)
-
 ## Aplicativos Utilizados
 
 * Arduino
-* CloudMQTT
+* HIVEMQ
 * MQTT Dashboard
 
 ## Rede e Hardware
@@ -25,7 +21,7 @@ Este documento apresenta as interfaces propostas para o projeto "Smart Lamp", ab
 
 * Arduino Uno R3
 * Relay Module
-* Ethernet Shield(HR911105A)
+* Ethernet Shield W5100(HR911105A)
 
 ### Protocolos
 ##### Padrão
