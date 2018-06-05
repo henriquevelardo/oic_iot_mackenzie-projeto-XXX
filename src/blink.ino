@@ -26,11 +26,7 @@ boolean statusLamp = LOW;
 byte mac[]={0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
 
 //Definindo o broker MQTT (CloudMQTT foi o utilizado)
-const char* mqttServer = "m11.cloudmqtt.com";   //server
-const char* mqttUser = "zfngzmhh";              //user
-const char* mqttPassword = "cY0AcBYQ01j5";      //password
-const int mqttPort = 11055;                     //port
-const char* mqttTopicSub ="my_username/SmartLamp/Lampada";  //MQTT dashboard
+const char* mqtt_server = "broker.hivemq.com";   //server
 
 //Configuração Ethernet Shield
 EthernetClient ethClient;
@@ -43,7 +39,7 @@ void setup() {
   //Define a comunicação serial
   Serial.begin(9600);
   while(!Serial){};
-  Serial.println(F("SmartLamp - MQTT Communication"))
+  Serial.println(F("SmartLamp - MQTT Communication"));
   Serial.println();
   
   //Define a rede do Ethernet Shiel usando DHCP
@@ -67,45 +63,52 @@ void setup() {
   
   //Configurando o Client MQTT
   mqttClient.setClient(ethClient);
-  mqttClient.setServer(mqttServer, mqttPort);
+  mqttClient.setServer(mqtt_server, 1883);
   mqttClient.setCallback(callback);
   
   
   
   Serial.println();
   Serial.println(F("Pronto para enviar dados"));
-  previousMillis = millis();
-  mqttClient.publish("home/br/nb/ip", ip.c_str());
+  sendData();
+  mqttClient.publish("oic2018smlamp/ip", ip.c_str());
+  mqttClient.subscribe("oic2018smlamp/lamp");
 }
 
 void loop()
 {
   statusLamp = digitalRead(pinoLamp);
-  if (millis() - previousMillis > PUBLISH_DELAY){
+  if (statusLamp == LOW){
+    sendData(); 
+    }
+  if (statusLamp == HIGH){
     sendData();
-    previousMillis = millis();
-
-  }
+    }  
+  
   mqttClient.loop();
 }
 
 void sendData(){
   char msgBuffer[20];
-  Serial.print("Lampada está: ");
-  Serial.println((relaystate == LOW) ? "OPEN" : "CLOSED");
+  //Serial.print("Lampada está: ");
+  //Serial.println((statusLamp == LOW) ? "OPEN" : "CLOSED");
   //Iniciando conexão com o MQTT
   while (!mqttClient.connected()){
     #ifdef DEBUG
     Serial.println("Conectando ao Broker MQTT...");
     #endif
-    if (mqttClient.connect("SmartLamp", mqttUser, mqttPassword)){
+    if (mqttClient.connect("SmartLamp")){
       #ifdef DEBUG
       Serial.println("Conectado");
-      mqttClient.publish("home/br/nb/relay", (relaystate == LOW) ? "OPEN" : "CLOSED");
-      mqttClient.subscribe(mqttTopicSub);
+      if (statusLamp == "LOW"){
+      mqttClient.publish("oic2018smlamp/lamp", (statusLamp == LOW) ? "0" ;
+      }
+      if (statusLamp == "HIGH"){
+        mqttClient.publish("oic2018smlamp/lamp", (statusLamp == HIGH) ? "1";
+      }
       if (startsend) {
-        mqttClient.publish("home/br/nb/relay", (relaystate == LOW) ? "OPEN" : "CLOSED");
-        mqttClient.publish("home/br/nb/ip", ip.c_str());
+        mqttClient.publish("oic2018smlamp/lamp", (statusLamp == LOW) ? "0");
+        mqttClient.publish("oic2018smlamp/ip", ip.c_str());
         startsend = LOW;
       }
       #endif
@@ -132,17 +135,14 @@ void callback(char* topic, byte* payload, unsigned int length) {
   // Verifica o primeiro caracter da mensagem.
   if (payload[0] == 49)             // Valor "1" na tabela ASCII
   {
-    digitalWrite(pinoLampada, HIGH);// Torna saida ON
+    digitalWrite(pinoLamp, HIGH);// Torna saida ON
     
   } else if (payload[0] == 48)      // Valor "0" in ASCII
   {
-    digitalWrite(pinoLampada, LOW);// Torna saida OFF
-  } else if (payload[0] == 50)
-  {
-    mqttClient.publish("home/br/nb/ip", ip.c_str());// publish IP nr
+    digitalWrite(pinoLamp, LOW);// Torna saida OFF
   } else {
     Serial.println("Valor Invalido");
-    mqttClient.publish("home/br/nb", "Syntax Error");
+    mqttClient.publish("oic2018smlamp/error", "Syntax Error");
   }
 
 }
